@@ -91,23 +91,19 @@ class VentanaPrincipal(Gtk.Window):
         print("compra")
         #genera una factura con la casa seleccionada en el treeview
         guion = []
-        doc = SimpleDocTemplate("Ejemplo.pdf", pagesize=A4, showBoundary=0)
+        doc = SimpleDocTemplate("Compra.pdf", pagesize=A4, showBoundary=0)
 
-        estilo = getSampleStyleSheet()
-        cabecera = estilo['Heading4']
-
-        tabla = Table(self.casa, colWidths=80, rowHeights=30)
+        follaEstilo = getSampleStyleSheet()
+        cabecera = follaEstilo['Heading4']
+        casaCompra=list(self.casa)
+        tabla = Table([self.casa], colWidths=80, rowHeights=30)
 
         tabla.setStyle(TableStyle([
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.blue),
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.green),
-            ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+
             ('BOX', (0, 0), (-1, -1), 1, colors.black),
-            ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.grey)
 
         ]))
-
+        estilo = follaEstilo['BodyText']
         parrafo = Paragraph("Gracias por su compra", estilo)
 
         guion.append(tabla)
@@ -115,9 +111,10 @@ class VentanaPrincipal(Gtk.Window):
         doc.build(guion)
 
     def informeCasas(self):
-        #informe con todas las casas a la venta
+        #informe con todas las casas a la venta en la aplicacion
         print("x")
         doc = SimpleDocTemplate("ListaCasas.pdf", pagesize=A4)
+        follaEstilo = getSampleStyleSheet()
         guion = []
         casas=self.bbdd.cursor().execute("select codc,dir,habitaciones,superficie from Casas")
         print("casas"+str(casas))
@@ -128,10 +125,13 @@ class VentanaPrincipal(Gtk.Window):
         tabla = Table(listaCasas, colWidths=80, rowHeights=30)
         tabla.setStyle(TableStyle([
 
-            ('BOX', (0, 0), (-1, 0), 1, colors.black),
+            ('BOX', (0, 0), (-1, -1), 1, colors.black),
 
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE')
         ]))
+        estilo = follaEstilo['BodyText']
+        parrafo = Paragraph("Casas a la venta", estilo)
+        guion.append(parrafo)
         guion.append(tabla)
 
         doc.build(guion)
