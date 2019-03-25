@@ -1,7 +1,7 @@
 from sqlite3 import dbapi2
 
 class FuncionesDB:
-
+    """Clase que se encarga de tener funciones de la base ded datos de usuarios"""
     def __init__(self):
         self.bbdd = dbapi2.connect("BasesDeDatos/Usuarios.db")
         #self.bbdd.execute("create table Usuarios(codu number, nomu text,pass text, role text)")
@@ -82,7 +82,7 @@ class FuncionesDB:
         """Metodo que inserta en la tabla Usuarios los valores dados"""
         cursor = self.bbdd.cursor()
         cursor.execute("insert into Usuarios values("+str(codu)+",'"+str(nomu)+"','"+str(passw)+"', '"+str(role)+"')")
-
+        self.bbdd.commit()
     def selectAll(self):
         listaAll=list()
         cursor = self.bbdd.cursor()

@@ -31,7 +31,6 @@ class VentanaRegistro(Gtk.Window):
 
         lblPass = Gtk.Label("Contraseña")
         self.txtPass = Gtk.Entry()
-        self.txtPass.set_visibility(False)
 
         lblCombo=Gtk.Label("Role")
         self.comboRole = Gtk.ComboBoxText()
@@ -40,7 +39,6 @@ class VentanaRegistro(Gtk.Window):
 
         lblConf = Gtk.Label("Confirmar")
         txtConf = Gtk.Entry()
-        txtConf.set_visibility(False)
 
         btnRegistro=Gtk.Button("Registrate")
         btnRegistro.connect("clicked",self.registro)
@@ -69,13 +67,14 @@ class VentanaRegistro(Gtk.Window):
 
         cc=FuncionesDB.selectCodU(self)
         codigo=0
+        #generamos un codigo nuevo sumandole 1
         for codu in cc:
             if(codu is not None):
-                if(codigo<=codu):
+                if(codigo<=int(codu)):
                     codigo=codu
         codigo=codigo+1
         FuncionesDB.insert(self.fc,codigo,self.txtUser.get_text(),self.txtPass.get_text(),self.comboRole.get_active_text())
-
+        self.destroy()
 
 
 

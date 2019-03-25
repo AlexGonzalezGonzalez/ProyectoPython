@@ -31,7 +31,6 @@ class VentanaLogin(Gtk.Window):
 
         lblPass = Gtk.Label("Contraseña")
         txtPass = Gtk.Entry()
-        txtPass.set_invisible_char("*")
 
         lblError= Gtk.Label()
 
@@ -63,13 +62,14 @@ class VentanaLogin(Gtk.Window):
 
     #Inicio de la VentanaPrincipal si los datos son correctos
     def log(self,boton,usuario,password,error):
-
+        #Compara el usuario y la contraseña si ya existen pasa a la ventana de compra
         cursor = self.bbdd.cursor()
         cursor.execute("select nomu,pass from Usuarios where nomu='"+str(usuario.get_text())+"' and pass='"+str(password.get_text())+"'")
 
-        if(cursor.fetchall().__len__()<=1):
-            VentanaPrincipal()
+
+        if(str(cursor.fetchall().__len__())==str(1)):
             print("Logueado")
+            VentanaPrincipal()
 
         else:
             error.set_text("Error en el login")

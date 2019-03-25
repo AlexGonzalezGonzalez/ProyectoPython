@@ -19,17 +19,18 @@ class VentanaPrincipal(Gtk.Window):
         # Nos conectamos a la base
         self.bbdd = dbapi2.connect("BasesDeDatos/Casas.db")
 
-        self.bbdd.execute("create table Casas(codc number, dir text,habitaciones number, superficie number)")
+        #self.bbdd.execute("create table Casas(codc number, dir text,habitaciones number, superficie number)")
 
 
-
+        """
         cursor=self.bbdd.cursor()
         self.bbdd.cursor().execute("insert into Casas Values(1, 'dir 1', 1, 70)")
         cursor = self.bbdd.cursor()
         self.bbdd.cursor().execute("insert into Casas Values(2, 'dir 2', 2, 80)")
         cursor = self.bbdd.cursor()
         self.bbdd.cursor().execute("insert into Casas Values(3, 'dir 3', 3, 90)")
-
+        self.bbdd.commit()
+        """
         self.informeCasas()
         casas = self.bbdd.cursor().execute("select codc,dir,habitaciones,superficie from Casas")
 
@@ -75,6 +76,7 @@ class VentanaPrincipal(Gtk.Window):
         self.show_all()
 
     def seleccion(self,seleccion):
+        """Funcion que sobrescribe un array dependiendo de la seleccion del usuario"""
         vista, puntero = seleccion.get_selected()
         if puntero is not None:
             codigo=self.modelo[puntero][0]
@@ -87,7 +89,7 @@ class VentanaPrincipal(Gtk.Window):
 
     def compra(self,boton):
         print("compra")
-
+        #genera una factura con la casa seleccionada en el treeview
         guion = []
         doc = SimpleDocTemplate("Ejemplo.pdf", pagesize=A4, showBoundary=0)
 
@@ -113,20 +115,21 @@ class VentanaPrincipal(Gtk.Window):
         doc.build(guion)
 
     def informeCasas(self):
+        #informe con todas las casas a la venta
         print("x")
-        doc = SimpleDocTemplate("TableFacturas.pdf", pagesize=A4)
+        doc = SimpleDocTemplate("ListaCasas.pdf", pagesize=A4)
         guion = []
         casas=self.bbdd.cursor().execute("select codc,dir,habitaciones,superficie from Casas")
         print("casas"+str(casas))
+        listaCasas=list()
+        for casa in casas:
+            listaCasas.append(list(casa))
 
-
-        tabla = Table(list(casas), colWidths=80, rowHeights=30)
+        tabla = Table(listaCasas, colWidths=80, rowHeights=30)
         tabla.setStyle(TableStyle([
-            ('ALIGN', (2, 5), (-1, -1), 'RIGHT'),
-            ('BACKGROUND', (0, 4), (-1, -1), colors.lightcyan),
-            ('BOX', (0, 4), (-1, -2), 1, colors.black),
-            ('BOX', (0, 0), (-1, 2), 1, colors.black),
-            ('INNERGRID', (0, 3), (-1, -2), 0.5, colors.grey),
+
+            ('BOX', (0, 0), (-1, 0), 1, colors.black),
+
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE')
         ]))
         guion.append(tabla)
